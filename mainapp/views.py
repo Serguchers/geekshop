@@ -1,31 +1,49 @@
-import datetime
-import json
-
+from django.conf import settings
 from django.shortcuts import render
+from django.utils import timezone
 
-with open('context_data/data.json', 'r') as f:
-    context_data = json.load(f)
-
-main_data = context_data['main']
-products_data = context_data['products']
-contact_data = context_data['contact']
+from .models import Product, ProductCategory
 
 
 def main(request):
+    title = "главная"
 
-    content = {"title": main_data['title'], "products": main_data['products']}
+    products = Product.objects.all()
+
+    content = {"title": title, "products": products, "media_url": settings.MEDIA_URL}
     return render(request, "mainapp/index.html", content)
 
 
 def products(request):
-
-    content = {"title": products_data['title'], "links_menu": products_data['links_menu'], "same_products": products_data['same_products']}
+    title = "продукты"
+    links_menu = ProductCategory.objects.all()
+    same_products = Product.objects.all()
+    content = {
+        "title": title,
+        "links_menu": links_menu,
+        "same_products": same_products,
+        "media_url": settings.MEDIA_URL,
+    }
     return render(request, "mainapp/products.html", content)
 
 
 def contact(request):
-
-    visit_date = datetime.datetime.now()
-
-    content = {"title": contact_data['title'], "visit_date": visit_date, "locations": contact_data['locations']}
+    title = "о нас"
+    visit_date = timezone.now()
+    locations = [
+        {"city": "Москва", "phone": "+7-888-888-8888", "email": "info@geekshop.ru", "address": "В пределах МКАД"},
+        {
+            "city": "Екатеринбург",
+            "phone": "+7-777-777-7777",
+            "email": "info_yekaterinburg@geekshop.ru",
+            "address": "Близко к центру",
+        },
+        {
+            "city": "Владивосток",
+            "phone": "+7-999-999-9999",
+            "email": "info_vladivostok@geekshop.ru",
+            "address": "Близко к океану",
+        },
+    ]
+    content = {"title": title, "visit_date": visit_date, "locations": locations}
     return render(request, "mainapp/contact.html", content)
