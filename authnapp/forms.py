@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm, UserCreationForm
-
+from django.contrib.auth.hashers import check_password
+from django.core.exceptions import ValidationError
 from .models import ShopUser
 
 
@@ -9,6 +10,14 @@ class ShopUserLoginForm(AuthenticationForm):
         super(ShopUserLoginForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        user = ShopUser.objects.get(username=self.cleaned_data.get('username'))
+        if not check_password(password, user.password):
+            raise ValidationError('Вы ввели неверный пароль!')
+        return password
+
 
     class Meta:
         model = ShopUser
@@ -27,6 +36,7 @@ class ShopUserRegisterForm(UserCreationForm):
         if data < 18:
             raise forms.ValidationError("Вы слишком молоды!")
         return data
+
 
     class Meta:
         model = ShopUser
