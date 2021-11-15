@@ -26,7 +26,7 @@ def products(request, pk=None):
         # or you can use this
         # _basket = request.user.basket.all()
         # print(f'basket / _basket: {len(_basket)} / {len(basket)}')
-        basket_cost= Basket.total_cost(request.user)
+        basket_cost = Basket.total_cost(request.user)
         print(basket_cost)
 
     if pk is not None:
