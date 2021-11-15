@@ -9,3 +9,17 @@ class Basket(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name="количество", default=0)
     add_datetime = models.DateTimeField(verbose_name="время добавления", auto_now_add=True)
+    
+    def total_cost(pk):
+        user_basket = Basket.objects.filter(user=pk)
+        total = 0
+        quantity = 0
+        for item in user_basket:
+            total += item.quantity * item.product.price
+            quantity += item.quantity
+
+        return round(total), quantity
+
+
+
+
