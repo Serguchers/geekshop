@@ -26,8 +26,6 @@ def products(request, pk=None):
         # or you can use this
         # _basket = request.user.basket.all()
         # print(f'basket / _basket: {len(_basket)} / {len(basket)}')
-        basket_cost= Basket.total_cost(request.user)
-        print(basket_cost)
 
     if pk is not None:
         if pk == 0:
@@ -43,10 +41,7 @@ def products(request, pk=None):
             "products": products,
             "media_url": settings.MEDIA_URL,
             "basket": basket,
-            "basket_cost": basket_cost[0],
-            "basket_quant": basket_cost[1],
         }
-        print(basket_cost[0], basket_cost[1])
         return render(request, "mainapp/products_list.html", content)
     same_products = Product.objects.all()
     content = {
