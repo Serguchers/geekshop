@@ -12,13 +12,6 @@ class ShopUserLoginForm(AuthenticationForm):
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
 
-    def clean_password(self):
-        password = self.cleaned_data.get("password")
-        user = ShopUser.objects.get(username=self.cleaned_data.get("username"))
-        if not check_password(password, user.password):
-            raise ValidationError("Вы ввели неверный пароль!")
-        return password
-
     class Meta:
         model = ShopUser
         fields = ("username", "password")
