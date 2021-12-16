@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "7s&!750e!np3^9__zg*b^^)w)m4ao#=mh**oi3457kwezefq0k"
+SECRET_KEY = "3@(__8%0**cfitmonhao8dryf-kzti-pkb#6tc!o!jwr#4-1qz"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if os.getenv("DJANGO_PRODUCTION", default=None) else True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -86,12 +86,23 @@ WSGI_APPLICATION = "geekshop.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "NAME": "geekshop",
+            "ENGINE": "django.db.backends.postgresql",
+            "USER": "django",
+            "PASSWORD": "geekbrains",
+            "HOST": "localhost",
+        }
+    }
 
 
 # Password validation
@@ -136,7 +147,11 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+# In common case STATIC_ROOT can not be in STATICFILES_DIRS
+if DEBUG:
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Media files
 MEDIA_URL = "/media/"
@@ -146,8 +161,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Set login path:
 #   https://docs.djangoproject.com/en/2.2/ref/settings/#login-url
 LOGIN_URL = "authnapp:login"
-
-# >---<
 
 DOMAIN_NAME = "http://localhost:8000"
 
@@ -173,7 +186,6 @@ EMAIL_HOST_PASSWORD = None
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = "tmp/email-messages/"
 
-# https://python-social-auth.readthedocs.io/en/latest/backends/index.html документация по social-auth-app-django
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "social_core.backends.github.GithubOAuth2",
