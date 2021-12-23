@@ -20,6 +20,7 @@ platformdirs==2.4.0
 psycopg2-binary==2.8.5
 pycparser==2.21
 pydotplus==2.0.2
+pygraphviz==1.7
 PyJWT==2.3.0
 pyparsing==3.0.6
 python-memcached==1.59
